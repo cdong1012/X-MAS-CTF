@@ -68,6 +68,9 @@
   * When we run the executable in gdb, we should hit the breakpoint at leave! Type ``` s ``` to step 1 step to the return instruction
   * At this point, you can ``` info registers ``` to see that you have written into RBP with "CCDDDDEE"
   * To see the current state of the stack, run ``` x/5wx $rsp ```. This will show the content of 5 words above where the current RSP is pointing(which is pointing at our RBP). We should see something like 
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/4.png)
+  * The first 8 bytes we see is the return address on the stack. We can see that we have overwritten it to be 0x00401200!
+  * If we ``` s ```, we can see that we hit the breakpoint again at leave! You can also check that we are correctly at the leave instruction by doing ``` x/i $rip ```
   
   
   
