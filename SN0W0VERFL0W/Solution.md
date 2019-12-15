@@ -16,7 +16,7 @@
   ```terminal
   python -c "print('A'*100)" | ./chall
   ```
-    ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
+   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
   
    * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow cause we overflow the return address of whatever function being called causing it to access invalid address in memory.
   
