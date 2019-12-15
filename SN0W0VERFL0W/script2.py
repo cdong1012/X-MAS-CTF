@@ -1,0 +1,2 @@
+padding = "AAAABBBBCCCCDDDDEEEEFFFFGGGG"
+print padding
