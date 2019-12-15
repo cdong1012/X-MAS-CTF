@@ -1,1 +1,1 @@
-This is my solution for the SN0W0VERFL0W pwn challenge from X-MAS CTF
+This is my solution for the pwn and RE challenges from X-MAS CTF
