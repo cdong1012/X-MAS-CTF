@@ -38,4 +38,36 @@
   
   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/3.png)
   
+  * A lot of registers here are not related to what we are doing, and we only need to care about the RSP(stack pointer) and RBP(base pointer)
+  
+3. Analyze gdb result
+  
+  * Before diving into the actual content of RSP and RBP we just get, let's take a look at the stack layout when a method is call
+  
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/x64_frame_nonleaf.png)
+  
+  * As you can see, local variables are push below RBP(at a negative index). We can assume in the context of our binary, the buffer is below the RBP and it's growing upward toward the RBP. During buffer overflow, the saved RBP and returned address can be overwritten with whatever we just input in to overflow the buffer.
+  * If you take a look at the registers' state above, we can see that RBP = 0x4545444444444343, and RSP = 0x7fffffffdf38.
+  * During stack clean up, RSP points back to RBP, so we know that 0x7fffffffdf38 is the memory address of RBP
+  * RBP has been overwritten with some weird pattern, as you can see. These are the ascii values of the character we type in! 
+  * In ascii, 'C'= 0x43, 'D' = 0x44, and 'E'=0x45. So now, we can start understanding the layout on the actual stack.
+  * Since our padding is "AAAABBBBCCCCDDDDEEEEFFFFGGGG", and we overwrite the RBP with CCDDDDEE, we know that the buffer is length(AAAABBBBCC) = 10 bytes!
+  * After these 10 bytes, the next 8 bytes will overwrite the RBP(as we can see up there), and the next 8 bytes after that will overwrite the return address to jump to anywhere we want!
+  * To test this, let's go back to our python script. Let's try and jump back to the leave instruction(it should be right before ret instruction. We know the ret instruction is at 0x401201 through `info registers`, so leave is at 0x401200
+  ```python
+  import struct
+  padding = "AAAABBBBCC"
+  rbp = "CCDDDDEE"
+  ret_addr = struct.pack('I', 0x401200)
+  ret_addr1 = struct.pack('I', 0x0000) # padd the address up to 8 bytes to fully overwrite the RSP
+  
+  print(padding + rbp + ret_addr + ret_addr1)
+  ```
+  * Before run this again, you should create a break point at the leave instruction just so we know if we sucessfully jump back here. Type ``` break *0x401200 ``` or whatever the address on your machine is
+  * run ``` python your_script_name.py > exploit ``` again, and pipe it in gdb just like how we did above
+  * When we run the executable in gdb, we should hit the breakpoint at leave! Type ``` s ``` to step 1 step to the return instruction
+  * At this point, you can ``` info registers ``` to see that you have written into RBP with "CCDDDDEE"
+  * To see the current state of the stack, run ``` x/5wx $rsp ```. This will show the content of 5 words above where the current RSP is pointing(which is pointing at our RBP). We should see something like 
+  
+  
   
