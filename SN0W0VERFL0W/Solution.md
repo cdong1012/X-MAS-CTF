@@ -5,22 +5,22 @@
 
 ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/SN0W0VERFL0W.png)
 
-1. Let's first try and run the executable they give us and see what we get.
+### 1. Let's first try and run the executable they give us and see what we get.
 
 ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/firstrun.png)
   
-  * As we can see, the executable is prompting for some user input. After we type in something, it will print out "Mhmmm... Boring..." 
-  * Since it's taking user input, we can proceed to check if the program is vulnerable to Buffer Overflow. One way to test it is to just input a really really long string to the input, and if the program outputs a SEGFAULT, then we know it's vulnerable.
-  * There are various ways to do this, but I usually like to just pipe some python script into the executable!
+   * As we can see, the executable is prompting for some user input. After we type in something, it will print out "Mhmmm... Boring..." 
+   * Since it's taking user input, we can proceed to check if the program is vulnerable to Buffer Overflow. One way to test it is to just input a really really long string to the input, and if the program outputs a SEGFAULT, then we know it's vulnerable.
+   * There are various ways to do this, but I usually like to just pipe some python script into the executable!
   
   ```terminal
   python -c "print('A'*100)" | ./chall
   ```
-  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
+    ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
   
-  * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow cause we overflow the return address of whatever function being called causing it to access invalid address in memory.
+   * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow cause we overflow the return address of whatever function being called causing it to access invalid address in memory.
   
-2. Next, we need to find out how big the buffer is
+### 2. Next, we need to find out how big the buffer is
 
   * We want to do this because we want to know the exact stack layout before the method returns. By knowing the exact length of the buffer, we can start injecting into the stack to overwrite the return address either to jump into shellcode, ret2libc, or just redirect the code flow to wherever we want.
   * Usually for this point, I like to create a python script to do this for me.
@@ -40,7 +40,7 @@
   
   * A lot of registers here are not related to what we are doing, and we only need to care about the RSP(stack pointer) and RBP(base pointer)
   
-3. Analyze gdb result
+### 3. Analyze gdb result
   
   * Before diving into the actual content of RSP and RBP we just get, let's take a look at the stack layout when a method is call
   
@@ -71,6 +71,7 @@
   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/4.png)
   * The first 8 bytes we see is the return address on the stack. We can see that we have overwritten it to be 0x00401200!
   * If we ``` s ```, we can see that we hit the breakpoint again at leave! You can also check that we are correctly at the leave instruction by doing ``` x/i $rip ```
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/5.png)
   
   
   
