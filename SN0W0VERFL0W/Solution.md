@@ -4,3 +4,5 @@
 * The prompt given to us is down below.
 
 ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/SN0W0VERFL0W.png)
+
+1. Let's first try and run the executable they give us and see what we get.
