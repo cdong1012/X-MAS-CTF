@@ -7,7 +7,7 @@
 
 1. Let's first try and run the executable they give us and see what we get.
 
-![Alt test](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/firstrun.png)
+![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/firstrun.png)
   
   * As we can see, the executable is prompting for some user input. After we type in something, it will print out "Mhmmm... Boring..." 
   * Since it's taking user input, we can proceed to check if the program is vulnerable to Buffer Overflow. One way to test it is to just input a really really long string to the input, and if the program outputs a SEGFAULT, then we know it's vulnerable.
@@ -16,4 +16,20 @@
   ```terminal
   python -c "print('A'*100)" | ./chall
   ```
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
   
+  * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow!
+  
+2. Next, we need to find out how big the buffer is
+
+  * We want to do this because we want to know the exact stack layout before the method returns. By knowing the exact length of the buffer, we can start injecting into the stack to overwrite the return address either to jump into shellcode, ret2libc, or just redirect the code flow to wherever we want.
+  * Usually for this point, I like to create a python script to do this for me.
+  ```python3
+  padding = "AAAABBBBCCCCDDDDEEEEFFFFGGGG"
+  print(padding)
+  ```
+  * With a recognizable pattern like this, we can know what is exactly in the RBP, RSP, and return address at the point of segfault
+  * Let's try and run gdb on the executable with the input from the python script.
+  * First, run the command ``` python your_script_name.py > exploit ```. After this, the output of the script is contain in a file called "exploit"
+  * After you run ``` gdb ./chall ```, type ``` r < exploit ``` in the gdb prompt.
+  * This will automatically pipe the content of the exploit into the input of the executable
