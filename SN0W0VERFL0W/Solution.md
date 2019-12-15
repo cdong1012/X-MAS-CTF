@@ -71,7 +71,15 @@
   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/4.png)
   * The first 8 bytes we see is the return address on the stack. We can see that we have overwritten it to be 0x00401200!
   * If we ``` s ```, we can see that we hit the breakpoint again at leave! You can also check that we are correctly at the leave instruction by doing ``` x/i $rip ```
+  
   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/5.png)
+  * Awesome! Now we know that we can redirect code by redirecting to any address! So what can we do? Where should we jump to?
+  
+### 4. Where to get flag?
+  * We can start dissecting the binary to look around for the flag, but since the binary is stripped, it's annoying to do it.
+  * Let's just throw it into a disassembler! I'll use Hopper for this, but you can use any similar application.
+  * After looking around at the different procedures in this binary in Hopper, there is one that stood out!
+  
   
   
   
