@@ -18,7 +18,7 @@
   ```
   ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/2.png)
   
-  * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow!
+  * And we did get a SEGFAULT! Perfect! Now we know that this executable is vulnerable to Buffer Overflow cause we overflow the return address of whatever function being called causing it to access invalid address in memory.
   
 2. Next, we need to find out how big the buffer is
 
@@ -33,3 +33,9 @@
   * First, run the command ``` python your_script_name.py > exploit ```. After this, the output of the script is contain in a file called "exploit"
   * After you run ``` gdb ./chall ```, type ``` r < exploit ``` in the gdb prompt.
   * This will automatically pipe the content of the exploit into the input of the executable
+  * You should run into a segfault in gdb, and the program will come to a halt!
+  * Next, we can check the registers of the system at the time of segfault by running ``` info registers ``` in gdb. You should see something like this 
+  
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/3.png)
+  
+  
