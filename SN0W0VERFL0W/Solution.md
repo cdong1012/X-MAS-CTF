@@ -102,5 +102,6 @@
   
   * Yay! We successfully run the method and print the flag out!! Let's try and run it on the ctf server to get the real flag
   
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/8.png)
   
   
